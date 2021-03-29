@@ -5,12 +5,12 @@
 
 static void (*outFunc)( void * );
 static void (*fitFunc)( void * );
-static threadpool *pool;
-static unsigned short Nthreads;
+//static threadpool *pool;
+//static unsigned short Nthreads;
 void initialize_fitness_library( void ) {
 
   string FITNESS_FUNCTION = params->getString("FITNESS_FUNCTION");
-  Nthreads = params->getUInt("NUM_THREADS");
+  //Nthreads = params->getUInt("NUM_THREADS");
 
   if ( FITNESS_FUNCTION == "TEST" ) {
     initialize_test();               // Call the test init function here in case we're running 
@@ -28,36 +28,36 @@ void initialize_fitness_library( void ) {
   }
 
   // Are we going to run the fitness calculations in parallel?
-  if ( Nthreads )
-    pool = new threadpool( fitFunc, Nthreads );
+  //if ( Nthreads )
+  //pool = new threadpool( fitFunc, Nthreads );
 
   return;
 }
 
 void getFitness( void *person ) {
 
-  if ( Nthreads )
-    pool->enqueue(person);
-  else
+  //if ( Nthreads )
+  //pool->enqueue(person);
+  //else
     (*fitFunc)(person);
-  return;
+    return;
 
 }
 
-void lock(void) {
-  pool->queue_lock();
-  return;
-}
+//void lock(void) {
+//pool->queue_lock();
+//return;
+//}
 
-void unlock(void) {
-  pool->queue_unlock();
-  return;
-}
+//void unlock(void) {
+//pool->queue_unlock();
+//return;
+//}
 
-void wait_for_threads( void ) {
-  pool->wait_until_empty();
-  return;
-}
+//void wait_for_threads( void ) {
+//pool->wait_until_empty();
+//return;
+//}
 
 void outputIndividual( void *person ) {
   (*outFunc)(person);

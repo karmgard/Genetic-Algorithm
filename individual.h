@@ -35,8 +35,10 @@ class individual {
   float *gene;
   int progeny;
   int generation;
-  float max_fitness;
-  int accuracy;
+  float max_fitness, mutation_rate;
+  int accuracy, num_threads;
+  float *pLo,*pHi;
+  bool simple_mutation;
 
   individual *previous;
   individual *next;

@@ -3,9 +3,10 @@
 
 #include "individual.h"
 #include "global.h"
-#include "parameters.h"
-#include "utilities.h"
 #include "fitness.h"
+
+#include <parameters.h>
+#include <utilities.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -59,6 +60,19 @@ class population {
   double *fitness_array;
   unsigned int allocation;
   bool mating_in_progress;
+
+  int initial_population;
+  int elitism_generations;
+  float percent_elites_kept;
+  bool keep_stable_population;
+  float max_fitness;
+  int verbose;
+  int number_of_genes;
+  int accuracy;
+  float mutation_rate;
+  float mutation_increase;
+  string sort_type;
+  int num_threads;
 
   individual * get_individual( int );
   individual * push( void );

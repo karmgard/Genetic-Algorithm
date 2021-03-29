@@ -20,11 +20,12 @@ main.o: /usr/include/x86_64-linux-gnu/bits/time.h
 main.o: /usr/include/x86_64-linux-gnu/sys/sysmacros.h
 main.o: /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
 main.o: /usr/include/alloca.h
-main.o: /usr/include/x86_64-linux-gnu/bits/stdlib-float.h ./parameters.h
-main.o: /usr/include/c++/4.8/iostream
+main.o: /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+main.o: /usr/include/c++/4.8/limits
 main.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h
 main.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h
 main.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/cpu_defines.h
+main.o: /home/karmgard/include/parameters.h /usr/include/c++/4.8/iostream
 main.o: /usr/include/c++/4.8/ostream /usr/include/c++/4.8/ios
 main.o: /usr/include/c++/4.8/iosfwd /usr/include/c++/4.8/bits/stringfwd.h
 main.o: /usr/include/c++/4.8/bits/memoryfwd.h
@@ -85,9 +86,16 @@ main.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/ctype_inline.h
 main.o: /usr/include/c++/4.8/bits/locale_facets.tcc
 main.o: /usr/include/c++/4.8/bits/basic_ios.tcc
 main.o: /usr/include/c++/4.8/bits/ostream.tcc /usr/include/c++/4.8/istream
-main.o: /usr/include/c++/4.8/bits/istream.tcc
+main.o: /usr/include/c++/4.8/bits/istream.tcc /usr/include/c++/4.8/sstream
+main.o: /usr/include/c++/4.8/bits/sstream.tcc /usr/include/c++/4.8/iomanip
 main.o: /usr/include/c++/4.8/unordered_map
-main.o: /usr/include/c++/4.8/bits/c++0x_warning.h /usr/include/fcntl.h
+main.o: /usr/include/c++/4.8/bits/c++0x_warning.h /usr/include/c++/4.8/vector
+main.o: /usr/include/c++/4.8/bits/stl_construct.h
+main.o: /usr/include/c++/4.8/ext/alloc_traits.h
+main.o: /usr/include/c++/4.8/bits/stl_uninitialized.h
+main.o: /usr/include/c++/4.8/bits/stl_vector.h
+main.o: /usr/include/c++/4.8/bits/stl_bvector.h
+main.o: /usr/include/c++/4.8/bits/vector.tcc /usr/include/fcntl.h
 main.o: /usr/include/x86_64-linux-gnu/bits/fcntl.h
 main.o: /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h
 main.o: /usr/include/x86_64-linux-gnu/bits/stat.h /usr/include/errno.h
@@ -95,20 +103,15 @@ main.o: /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h
 main.o: /usr/include/x86_64-linux-gnu/asm/errno.h
 main.o: /usr/include/asm-generic/errno.h
 main.o: /usr/include/asm-generic/errno-base.h /usr/include/string.h
-main.o: /usr/include/c++/4.8/limits population.h individual.h
-main.o: /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/huge_val.h
+main.o: population.h individual.h /usr/include/math.h
+main.o: /usr/include/x86_64-linux-gnu/bits/huge_val.h
 main.o: /usr/include/x86_64-linux-gnu/bits/huge_valf.h
 main.o: /usr/include/x86_64-linux-gnu/bits/huge_vall.h
 main.o: /usr/include/x86_64-linux-gnu/bits/inf.h
 main.o: /usr/include/x86_64-linux-gnu/bits/nan.h
 main.o: /usr/include/x86_64-linux-gnu/bits/mathdef.h
-main.o: /usr/include/x86_64-linux-gnu/bits/mathcalls.h utilities.h fitness.h
-main.o: ./threadpool.h /usr/include/c++/4.8/deque
-main.o: /usr/include/c++/4.8/bits/stl_construct.h
-main.o: /usr/include/c++/4.8/ext/alloc_traits.h
-main.o: /usr/include/c++/4.8/bits/stl_uninitialized.h
-main.o: /usr/include/c++/4.8/bits/stl_deque.h
-main.o: /usr/include/c++/4.8/bits/deque.tcc gnuplot.h /usr/include/signal.h
+main.o: /usr/include/x86_64-linux-gnu/bits/mathcalls.h fitness.h
+main.o: /home/karmgard/include/utilities.h /usr/include/signal.h
 main.o: /usr/include/x86_64-linux-gnu/bits/signum.h
 main.o: /usr/include/x86_64-linux-gnu/bits/siginfo.h
 main.o: /usr/include/x86_64-linux-gnu/bits/sigaction.h
@@ -119,6 +122,8 @@ main.o: /usr/include/x86_64-linux-gnu/bits/sigthread.h
 main.o: /usr/include/x86_64-linux-gnu/sys/resource.h
 main.o: /usr/include/x86_64-linux-gnu/bits/resource.h
 main.o: /usr/include/x86_64-linux-gnu/sys/time.h /usr/include/values.h
+main.o: /usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/limits.h
+main.o: /usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/syslimits.h
 main.o: /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h
 main.o: /usr/include/x86_64-linux-gnu/bits/local_lim.h
 main.o: /usr/include/linux/limits.h
@@ -206,101 +211,6 @@ main.o: /usr/include/libgtop-2.0/glibtop/close.h
 main.o: /usr/include/libgtop-2.0/glibtop/cpu.h
 main.o: /usr/include/libgtop-2.0/glibtop/mem.h
 main.o: /usr/include/libgtop-2.0/glibtop/proctime.h
-parameters.o: ./parameters.h /usr/include/c++/4.8/iostream
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h
-parameters.o: /usr/include/features.h /usr/include/stdc-predef.h
-parameters.o: /usr/include/x86_64-linux-gnu/sys/cdefs.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/wordsize.h
-parameters.o: /usr/include/x86_64-linux-gnu/gnu/stubs.h
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/cpu_defines.h
-parameters.o: /usr/include/c++/4.8/ostream /usr/include/c++/4.8/ios
-parameters.o: /usr/include/c++/4.8/iosfwd
-parameters.o: /usr/include/c++/4.8/bits/stringfwd.h
-parameters.o: /usr/include/c++/4.8/bits/memoryfwd.h
-parameters.o: /usr/include/c++/4.8/bits/postypes.h
-parameters.o: /usr/include/c++/4.8/cwchar /usr/include/wchar.h
-parameters.o: /usr/include/stdio.h
-parameters.o: /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/wchar.h
-parameters.o: /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h
-parameters.o: /usr/include/xlocale.h /usr/include/c++/4.8/exception
-parameters.o: /usr/include/c++/4.8/bits/atomic_lockfree_defines.h
-parameters.o: /usr/include/c++/4.8/bits/char_traits.h
-parameters.o: /usr/include/c++/4.8/bits/stl_algobase.h
-parameters.o: /usr/include/c++/4.8/bits/functexcept.h
-parameters.o: /usr/include/c++/4.8/bits/exception_defines.h
-parameters.o: /usr/include/c++/4.8/bits/cpp_type_traits.h
-parameters.o: /usr/include/c++/4.8/ext/type_traits.h
-parameters.o: /usr/include/c++/4.8/ext/numeric_traits.h
-parameters.o: /usr/include/c++/4.8/bits/stl_pair.h
-parameters.o: /usr/include/c++/4.8/bits/move.h
-parameters.o: /usr/include/c++/4.8/bits/concept_check.h
-parameters.o: /usr/include/c++/4.8/bits/stl_iterator_base_types.h
-parameters.o: /usr/include/c++/4.8/bits/stl_iterator_base_funcs.h
-parameters.o: /usr/include/c++/4.8/debug/debug.h
-parameters.o: /usr/include/c++/4.8/bits/stl_iterator.h
-parameters.o: /usr/include/c++/4.8/bits/localefwd.h
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++locale.h
-parameters.o: /usr/include/c++/4.8/clocale /usr/include/locale.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/locale.h
-parameters.o: /usr/include/c++/4.8/cctype /usr/include/ctype.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/types.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/typesizes.h
-parameters.o: /usr/include/endian.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/endian.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/byteswap.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/byteswap-16.h
-parameters.o: /usr/include/c++/4.8/bits/ios_base.h
-parameters.o: /usr/include/c++/4.8/ext/atomicity.h
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/gthr.h
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/gthr-default.h
-parameters.o: /usr/include/pthread.h /usr/include/sched.h /usr/include/time.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/sched.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/setjmp.h
-parameters.o: /usr/include/unistd.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/posix_opt.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/confname.h
-parameters.o: /usr/include/getopt.h
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/atomic_word.h
-parameters.o: /usr/include/c++/4.8/bits/locale_classes.h
-parameters.o: /usr/include/c++/4.8/string
-parameters.o: /usr/include/c++/4.8/bits/allocator.h
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++allocator.h
-parameters.o: /usr/include/c++/4.8/ext/new_allocator.h
-parameters.o: /usr/include/c++/4.8/new
-parameters.o: /usr/include/c++/4.8/bits/ostream_insert.h
-parameters.o: /usr/include/c++/4.8/bits/cxxabi_forced.h
-parameters.o: /usr/include/c++/4.8/bits/stl_function.h
-parameters.o: /usr/include/c++/4.8/backward/binders.h
-parameters.o: /usr/include/c++/4.8/bits/range_access.h
-parameters.o: /usr/include/c++/4.8/bits/basic_string.h
-parameters.o: /usr/include/c++/4.8/bits/basic_string.tcc
-parameters.o: /usr/include/c++/4.8/bits/locale_classes.tcc
-parameters.o: /usr/include/c++/4.8/streambuf
-parameters.o: /usr/include/c++/4.8/bits/streambuf.tcc
-parameters.o: /usr/include/c++/4.8/bits/basic_ios.h
-parameters.o: /usr/include/c++/4.8/bits/locale_facets.h
-parameters.o: /usr/include/c++/4.8/cwctype /usr/include/wctype.h
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/ctype_base.h
-parameters.o: /usr/include/c++/4.8/bits/streambuf_iterator.h
-parameters.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/ctype_inline.h
-parameters.o: /usr/include/c++/4.8/bits/locale_facets.tcc
-parameters.o: /usr/include/c++/4.8/bits/basic_ios.tcc
-parameters.o: /usr/include/c++/4.8/bits/ostream.tcc
-parameters.o: /usr/include/c++/4.8/istream
-parameters.o: /usr/include/c++/4.8/bits/istream.tcc
-parameters.o: /usr/include/c++/4.8/unordered_map
-parameters.o: /usr/include/c++/4.8/bits/c++0x_warning.h /usr/include/fcntl.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/fcntl.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/stat.h /usr/include/errno.h
-parameters.o: /usr/include/x86_64-linux-gnu/bits/errno.h
-parameters.o: /usr/include/linux/errno.h
-parameters.o: /usr/include/x86_64-linux-gnu/asm/errno.h
-parameters.o: /usr/include/asm-generic/errno.h
-parameters.o: /usr/include/asm-generic/errno-base.h /usr/include/string.h
 population.o: population.h individual.h global.h /usr/include/stdlib.h
 population.o: /usr/include/features.h /usr/include/stdc-predef.h
 population.o: /usr/include/x86_64-linux-gnu/sys/cdefs.h
@@ -324,12 +234,13 @@ population.o: /usr/include/x86_64-linux-gnu/sys/sysmacros.h
 population.o: /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
 population.o: /usr/include/alloca.h
 population.o: /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
-population.o: ./parameters.h /usr/include/c++/4.8/iostream
+population.o: /usr/include/c++/4.8/limits
 population.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h
 population.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h
 population.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/cpu_defines.h
-population.o: /usr/include/c++/4.8/ostream /usr/include/c++/4.8/ios
-population.o: /usr/include/c++/4.8/iosfwd
+population.o: /home/karmgard/include/parameters.h
+population.o: /usr/include/c++/4.8/iostream /usr/include/c++/4.8/ostream
+population.o: /usr/include/c++/4.8/ios /usr/include/c++/4.8/iosfwd
 population.o: /usr/include/c++/4.8/bits/stringfwd.h
 population.o: /usr/include/c++/4.8/bits/memoryfwd.h
 population.o: /usr/include/c++/4.8/bits/postypes.h
@@ -397,8 +308,17 @@ population.o: /usr/include/c++/4.8/bits/basic_ios.tcc
 population.o: /usr/include/c++/4.8/bits/ostream.tcc
 population.o: /usr/include/c++/4.8/istream
 population.o: /usr/include/c++/4.8/bits/istream.tcc
-population.o: /usr/include/c++/4.8/unordered_map
-population.o: /usr/include/c++/4.8/bits/c++0x_warning.h /usr/include/fcntl.h
+population.o: /usr/include/c++/4.8/sstream
+population.o: /usr/include/c++/4.8/bits/sstream.tcc
+population.o: /usr/include/c++/4.8/iomanip /usr/include/c++/4.8/unordered_map
+population.o: /usr/include/c++/4.8/bits/c++0x_warning.h
+population.o: /usr/include/c++/4.8/vector
+population.o: /usr/include/c++/4.8/bits/stl_construct.h
+population.o: /usr/include/c++/4.8/ext/alloc_traits.h
+population.o: /usr/include/c++/4.8/bits/stl_uninitialized.h
+population.o: /usr/include/c++/4.8/bits/stl_vector.h
+population.o: /usr/include/c++/4.8/bits/stl_bvector.h
+population.o: /usr/include/c++/4.8/bits/vector.tcc /usr/include/fcntl.h
 population.o: /usr/include/x86_64-linux-gnu/bits/fcntl.h
 population.o: /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h
 population.o: /usr/include/x86_64-linux-gnu/bits/stat.h /usr/include/errno.h
@@ -407,20 +327,15 @@ population.o: /usr/include/linux/errno.h
 population.o: /usr/include/x86_64-linux-gnu/asm/errno.h
 population.o: /usr/include/asm-generic/errno.h
 population.o: /usr/include/asm-generic/errno-base.h /usr/include/string.h
-population.o: /usr/include/c++/4.8/limits /usr/include/math.h
+population.o: /usr/include/math.h
 population.o: /usr/include/x86_64-linux-gnu/bits/huge_val.h
 population.o: /usr/include/x86_64-linux-gnu/bits/huge_valf.h
 population.o: /usr/include/x86_64-linux-gnu/bits/huge_vall.h
 population.o: /usr/include/x86_64-linux-gnu/bits/inf.h
 population.o: /usr/include/x86_64-linux-gnu/bits/nan.h
 population.o: /usr/include/x86_64-linux-gnu/bits/mathdef.h
-population.o: /usr/include/x86_64-linux-gnu/bits/mathcalls.h utilities.h
-population.o: fitness.h ./threadpool.h /usr/include/c++/4.8/deque
-population.o: /usr/include/c++/4.8/bits/stl_construct.h
-population.o: /usr/include/c++/4.8/ext/alloc_traits.h
-population.o: /usr/include/c++/4.8/bits/stl_uninitialized.h
-population.o: /usr/include/c++/4.8/bits/stl_deque.h
-population.o: /usr/include/c++/4.8/bits/deque.tcc
+population.o: /usr/include/x86_64-linux-gnu/bits/mathcalls.h fitness.h
+population.o: /home/karmgard/include/utilities.h
 individual.o: individual.h global.h /usr/include/stdlib.h
 individual.o: /usr/include/features.h /usr/include/stdc-predef.h
 individual.o: /usr/include/x86_64-linux-gnu/sys/cdefs.h
@@ -444,12 +359,13 @@ individual.o: /usr/include/x86_64-linux-gnu/sys/sysmacros.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
 individual.o: /usr/include/alloca.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
-individual.o: ./parameters.h /usr/include/c++/4.8/iostream
+individual.o: /usr/include/c++/4.8/limits
 individual.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h
 individual.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h
 individual.o: /usr/include/x86_64-linux-gnu/c++/4.8/bits/cpu_defines.h
-individual.o: /usr/include/c++/4.8/ostream /usr/include/c++/4.8/ios
-individual.o: /usr/include/c++/4.8/iosfwd
+individual.o: /home/karmgard/include/parameters.h
+individual.o: /usr/include/c++/4.8/iostream /usr/include/c++/4.8/ostream
+individual.o: /usr/include/c++/4.8/ios /usr/include/c++/4.8/iosfwd
 individual.o: /usr/include/c++/4.8/bits/stringfwd.h
 individual.o: /usr/include/c++/4.8/bits/memoryfwd.h
 individual.o: /usr/include/c++/4.8/bits/postypes.h
@@ -517,8 +433,17 @@ individual.o: /usr/include/c++/4.8/bits/basic_ios.tcc
 individual.o: /usr/include/c++/4.8/bits/ostream.tcc
 individual.o: /usr/include/c++/4.8/istream
 individual.o: /usr/include/c++/4.8/bits/istream.tcc
-individual.o: /usr/include/c++/4.8/unordered_map
-individual.o: /usr/include/c++/4.8/bits/c++0x_warning.h /usr/include/fcntl.h
+individual.o: /usr/include/c++/4.8/sstream
+individual.o: /usr/include/c++/4.8/bits/sstream.tcc
+individual.o: /usr/include/c++/4.8/iomanip /usr/include/c++/4.8/unordered_map
+individual.o: /usr/include/c++/4.8/bits/c++0x_warning.h
+individual.o: /usr/include/c++/4.8/vector
+individual.o: /usr/include/c++/4.8/bits/stl_construct.h
+individual.o: /usr/include/c++/4.8/ext/alloc_traits.h
+individual.o: /usr/include/c++/4.8/bits/stl_uninitialized.h
+individual.o: /usr/include/c++/4.8/bits/stl_vector.h
+individual.o: /usr/include/c++/4.8/bits/stl_bvector.h
+individual.o: /usr/include/c++/4.8/bits/vector.tcc /usr/include/fcntl.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/fcntl.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/stat.h /usr/include/errno.h
@@ -527,7 +452,7 @@ individual.o: /usr/include/linux/errno.h
 individual.o: /usr/include/x86_64-linux-gnu/asm/errno.h
 individual.o: /usr/include/asm-generic/errno.h
 individual.o: /usr/include/asm-generic/errno-base.h /usr/include/string.h
-individual.o: /usr/include/c++/4.8/limits /usr/include/math.h
+individual.o: /usr/include/math.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/huge_val.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/huge_valf.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/huge_vall.h
@@ -535,39 +460,3 @@ individual.o: /usr/include/x86_64-linux-gnu/bits/inf.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/nan.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/mathdef.h
 individual.o: /usr/include/x86_64-linux-gnu/bits/mathcalls.h fitness.h
-individual.o: ./threadpool.h /usr/include/c++/4.8/deque
-individual.o: /usr/include/c++/4.8/bits/stl_construct.h
-individual.o: /usr/include/c++/4.8/ext/alloc_traits.h
-individual.o: /usr/include/c++/4.8/bits/stl_uninitialized.h
-individual.o: /usr/include/c++/4.8/bits/stl_deque.h
-individual.o: /usr/include/c++/4.8/bits/deque.tcc
-gnuplot.o: gnuplot.h /usr/include/stdio.h /usr/include/stdlib.h
-gnuplot.o: /usr/include/features.h /usr/include/stdc-predef.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/sys/cdefs.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/wordsize.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/gnu/stubs.h
-gnuplot.o: /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/waitflags.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/waitstatus.h
-gnuplot.o: /usr/include/endian.h /usr/include/x86_64-linux-gnu/bits/endian.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/byteswap.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/types.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/typesizes.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/byteswap-16.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/sys/types.h /usr/include/time.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/sys/select.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/select.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/sigset.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/time.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/sys/sysmacros.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
-gnuplot.o: /usr/include/alloca.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
-gnuplot.o: /usr/include/string.h /usr/include/xlocale.h /usr/include/unistd.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/posix_opt.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/confname.h
-gnuplot.o: /usr/include/getopt.h
-gnuplot.o: /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h
-gnuplot.o: /usr/include/fcntl.h /usr/include/x86_64-linux-gnu/bits/fcntl.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h
-gnuplot.o: /usr/include/x86_64-linux-gnu/bits/stat.h

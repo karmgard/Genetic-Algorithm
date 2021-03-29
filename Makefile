@@ -4,15 +4,15 @@ SHELL=/bin/bash
 # Make sure the .dependencies file exists, otherwise the include at the bottom will choke
 $(shell touch .dependencies)
 
-SRC=main.cpp parameters.cpp population.cpp individual.cpp gnuplot.cpp
-HDR=global.h individual.h parameters.h population.h utilities.h gnuplot.h
+SRC=main.cpp  population.cpp individual.cpp
+HDR=global.h individual.h population.h
 OBJ=$(subst .cpp,.o,${SRC})
 
 TESTSRC=test.cpp
 TESTOBJ=$(subst .cpp,.o,${TESTSRC})
 
-LIBSRC=fitness.cpp utilities.cpp threadpool.cpp
-LIBHDR=fitness.h utilities.h threadpool.h
+LIBSRC=fitness.cpp
+LIBHDR=fitness.h
 LIBOBJ=$(subst .cpp,.o,${LIBSRC})
 LIBBIN=libfitness.so
 
@@ -26,12 +26,13 @@ INCLUDEPATHS= -I. -I ${HOME}/include \
 	-I/usr/include/c++/${GCC_VERSION} \
 	-I/usr/include/c++/${GCC_VERSION}/${ARCH}-linux-gnu \
 	-I/usr/lib/gcc/${ARCH}-linux-gnu/${GCC_VERSION}/include \
+	-I/usr/lib/gcc/${ARCH}-linux-gnu/${GCC_VERSION}/include-fixed \
 	-I/usr/include/${ARCH}-linux-gnu \
 	-I/usr/include/${ARCH}-linux-gnu/c++/${GCC_VERSION} \
 	`pkg-config libgtop-2.0 --cflags`
 
 LIBSEARCH=-L./ -L${HOME}/lib
-LIBRARIES=-lm -lfitness `pkg-config libgtop-2.0 --libs`
+LIBRARIES=-lm -lfitness -lparameters -l utilities `pkg-config libgtop-2.0 --libs`
 DEBUG=0
 
 ifeq (${DEBUG},1)
@@ -55,7 +56,7 @@ BIN=ga
 
 CC=g++ $(CPUOPT) $(INCLUDEPATHS) 
 LINK=g++ -o $(BIN) $(OBJ) $(LIBS)
-LINKTEST=g++ -o test $(TESTOBJ)
+LINKTEST=g++ -o test $(TESTOBJ) $(LIBSEARCH) -lm -lparameters -lutilities
 
 all:	lib $(BIN)
 
@@ -95,7 +96,7 @@ backup:
 	@tar -zcf network.tar.gz $(SRC) $(HDR) $(LIBSRC) $(LIBHDR) $(EXTRA)
 depend dep:
 ifneq (${OS},darwin)
-	makedepend  $(INCLUDEPATHS) $(SRC) -f .dependencies;
+	makedepend $(INCLUDEPATHS) $(SRC) -f .dependencies;
 else
 	makedepend -D__DARWIN__ $(INCLUDEPATHS) $(SRC) -f .dependencies;
 endif

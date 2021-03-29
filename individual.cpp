@@ -6,7 +6,7 @@ extern char state[256];
 /*-- Default instantiator, mostly for creating temporary individuals --*/
 individual::individual( void ) {
 
-  this->nGenes = params->NUMBER_OF_GENES;
+  this->nGenes = params->getInt("NUMBER_OF_GENES");
 
   this->gene = new float [this->nGenes];
   if ( this->gene == NULL )
@@ -15,8 +15,41 @@ individual::individual( void ) {
   for (int i=0; i<this->nGenes; i++)
     this->gene[i] = 0.0f;
 
-  this->fitness = this->max_fitness = params->MAX_FITNESS;
-  this->accuracy = params->ACCURACY;
+  pLo = params->getFloatArray("LOWER_LIMITS");
+  pHi = params->getFloatArray("UPPER_LIMITS");
+
+  if ( !pLo || !pHi ) {
+    cerr << "Limit arrays do not exist!\n";
+
+    float lower = params->getFloat("LOWER_LIMIT_ALL");
+    float upper = params->getFloat("UPPER_LIMIT_ALL");
+
+    if ( lower == upper ) {
+      perror("Invalid limits on parameters!\n");
+      exit (2);
+    }
+
+    float *lo = (float *)malloc( nGenes * sizeof(float) );
+    float *hi = (float *)malloc( nGenes * sizeof(float) );
+
+    for ( int i=0; i<nGenes; i++ ) {
+      lo[i] = lower;
+      hi[i] = upper;
+    }
+    params->setFloatArray("LOWER_LIMITS", lo, nGenes);
+    params->setFloatArray("UPPER_LIMITS", hi, nGenes);
+
+    pLo = params->getFloatArray("LOWER_LIMITS");
+    pHi = params->getFloatArray("UPPER_LIMITS");
+  }
+
+  mutation_rate = params->getFloat("MUTATION_RATE");
+  simple_mutation = params->getBool("MUTATE_SIMPLE");
+
+  num_threads = params->getInt("NUM_THREADS");
+
+  this->fitness = this->max_fitness = params->getFloat("MAX_FITNESS");
+  this->accuracy = params->getInt("ACCURACY");
   this->count = -1;
   this->generation = 0;
   this->previous = NULL;
@@ -28,24 +61,55 @@ individual::individual( void ) {
 /*-- Basic instantiator, for creating individuals --*/
 individual::individual( individual **new_person, bool initialize , bool FIRST ) {
 
-  this->nGenes = params->NUMBER_OF_GENES;
+  this->nGenes = params->getInt("NUMBER_OF_GENES");
 
   this->gene = new float [this->nGenes];
   if ( this->gene == NULL )
     exit(3);
 
-  this->max_fitness = params->MAX_FITNESS;
-  this->accuracy    = params->ACCURACY;
+  this->max_fitness = params->getFloat("MAX_FITNESS");
+  this->accuracy    = params->getInt("ACCURACY");
+
+  mutation_rate = params->getFloat("MUTATION_RATE");
+  simple_mutation = params->getBool("MUTATE_SIMPLE");
+
+  pLo = params->getFloatArray("LOWER_LIMITS");
+  pHi = params->getFloatArray("UPPER_LIMITS");
+
+  if ( !pLo || !pHi ) {
+    cerr << "Limit arrays do not exist!\n";
+
+    float lower = params->getFloat("LOWER_LIMIT_ALL");
+    float upper = params->getFloat("UPPER_LIMIT_ALL");
+
+    if ( lower == upper ) {
+      perror("Invalid limits on parameters!\n");
+      exit (2);
+    }
+
+    float *lo = (float *)malloc( nGenes * sizeof(float) );
+    float *hi = (float *)malloc( nGenes * sizeof(float) );
+
+    for ( int i=0; i<nGenes; i++ ) {
+      lo[i] = lower;
+      hi[i] = upper;
+    }
+    params->setFloatArray("LOWER_LIMITS", lo, nGenes);
+    params->setFloatArray("UPPER_LIMITS", hi, nGenes);
+
+    pLo = params->getFloatArray("LOWER_LIMITS");
+    pHi = params->getFloatArray("UPPER_LIMITS");
+  }
 
   if ( initialize ) {
     for (int i=0; i<this->nGenes; i++)
-      this->gene[i] = params->pLO[i] + randf()*(params->pHI[i] - params->pLO[i]);
+      this->gene[i] = pLo[i] + randf()*(pHi[i] - pLo[i]);
     this->testFitness();
   }
   else {
     for (int i=0; i<this->nGenes; i++)
       this->gene[i] = 0.0f;
-    this->fitness = params->MAX_FITNESS;
+    this->fitness = max_fitness;
   }
 
   this->previous    = 0x0;
@@ -73,6 +137,7 @@ individual::~individual( void ) {
   this->count = 0;
   this->generation = 0;
   this->fitness = this->max_fitness;
+  this->pLo = this->pHi = 0x0;
 
   return;
 }
@@ -80,7 +145,7 @@ individual::~individual( void ) {
 /* Create a new set of genes for this individual */
 void individual::set_genes( void ) {
   for (int i=0; i<this->nGenes; i++)
-    this->gene[i] = params->pLO[i] + randf()*(params->pHI[i] - params->pLO[i]);
+    this->gene[i] = pLo[i] + randf()*(pHi[i] - pLo[i]);
   this->testFitness();
   return;
 }
@@ -143,7 +208,7 @@ individual *individual::make_baby( individual *mommy ) {
   baby->generation = 0;
   
   baby->mutate();
-  if ( !params->NUM_THREADS )  
+  if ( !num_threads )  
     baby->testFitness();
 
   return baby;
@@ -164,10 +229,10 @@ void individual::mutate_simple( void ) {
    * brute force testing each gene for mutation.
    */
   int counter = 1;
-  while ( randf() < params->MUTATION_RATE ) {   // Are we going to mutate?
+  while ( randf() < mutation_rate ) {   // Are we going to mutate?
     // Yuppers.... select an integer in [0,this->nGenes-1]
     unsigned int which = rand() %  this->nGenes;
-    this->gene[which] = params->pLO[which] + randf()*(params->pHI[which] - params->pLO[which]);
+    this->gene[which] = pLo[which] + randf()*(pHi[which] - pLo[which]);
     counter++;
   }
 
@@ -182,11 +247,11 @@ void individual::mutate( void ) {
    * Nothing is going to happen anyhow, so don't
    * waste the CPU cycles for no result.
    */
-  if ( params->MUTATION_RATE <= 0.0f )
+  if ( mutation_rate <= 0.0f )
     return;
 
   /*-- If a simple mutation scheme was called for, call it here and bail --*/
-  if ( params->MUTATE_SIMPLE ) {
+  if ( simple_mutation ) {
     mutate_simple();
     return;
   }
@@ -212,8 +277,8 @@ void individual::mutate( void ) {
   /* This yields a cummulative probability that 
    * 1 or more bits will get flipped in the routine
    */
-  static float probability_per_bit = params->MUTATION_RATE/((float)number_of_bits);
-  static float probability_per_gene = params->MUTATION_RATE/((float)this->nGenes);
+  static float probability_per_bit = mutation_rate/((float)number_of_bits);
+  static float probability_per_gene = mutation_rate/((float)this->nGenes);
   unsigned short int i;
 
   /* Randomly flip bits with some cummulative probability.
@@ -247,7 +312,7 @@ void individual::mutate( void ) {
       // Check for errors induced in the bit flipping
       stillborn = this->gene[i] != this->gene[i] ||
 	fabs(this->gene[i]) == INFINITY ||
-	this->gene[i] < params->pLO[i] || this->gene[i] > params->pHI[i];
+	this->gene[i] < pLo[i] || this->gene[i] > pHi[i];
 
       if ( stillborn ) {
 	this->gene[i] = saveParam;

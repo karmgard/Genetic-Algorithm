@@ -9,7 +9,20 @@ population::population( void ) {
   this->first = new individual( &this->first, true, true );
   person = this->first;
 
-  for (int i=1; i<params->INITIAL_POPULATION; i++)
+  initial_population = params->getInt("INITIAL_POPULATION");
+  elitism_generations = params->getInt("ELITISM_GENERATIONS");
+  percent_elites_kept = params->getFloat("PERCENT_ELITES_KEPT");
+  keep_stable_population = params->getBool("KEEP_STABLE_POPULATION");
+  max_fitness = params->getFloat("MAX_FITNESS");
+  verbose = params->getInt("VERBOSE");
+  number_of_genes = params->getInt("NUMBER_OF_GENES");
+  accuracy = params->getInt("ACCURACY");
+  mutation_rate = params->getFloat("MUTATION_RATE");
+  mutation_increase = params->getFloat("MUTATION_GAIN");
+  sort_type = params->getString("SORT_TYPE");
+  num_threads = 0; //params->getInt("NUM_THREADS");
+
+  for (int i=1; i<initial_population; i++)
     person = new individual( &person );
 
   this->last = person;
@@ -17,7 +30,7 @@ population::population( void ) {
   
   this->get_fittest();
 
-  this->allocation = params->INITIAL_POPULATION;
+  this->allocation = initial_population;
   this->fitness_array = new double [this->allocation];
 
   this->generation = 0;
@@ -57,21 +70,21 @@ population::~population( void ) {
 void population::copy_elites(void) {
 
   /*-- Keep the most fit individual(s) for a few generations, by request --*/
-  if (params->ELITISM_GENERATIONS > 0) {
+  if (elitism_generations > 0) {
 
     /*-- If we're carrying some % of the population over... pack 'em in --*/
-    if ( params->PERCENT_ELITES_KEPT ) {
-      int number_to_keep = (int)fround((params->PERCENT_ELITES_KEPT*this->last->count), 0);
+    if ( percent_elites_kept ) {
+      int number_to_keep = (int)fround((percent_elites_kept*this->last->count), 0);
 
       /*-- Start from the first person in the old population --*/
       person = this->first;
 
       while ( person->count < number_to_keep ) {
 
-	if ( person->generation++ < params->ELITISM_GENERATIONS ) {
+	if ( person->generation++ < elitism_generations ) {
 	  newPopulation->unshift(person);
 
-	  if ( params->KEEP_STABLE_POPULATION )
+	  if ( keep_stable_population )
 	    newPopulation->pop();
 
 	} else
@@ -82,11 +95,11 @@ void population::copy_elites(void) {
       }
 
     } else {              // We're only keeping the most fit individual
-      if ( this->mostfit->generation++ < params->ELITISM_GENERATIONS ) {
+      if ( this->mostfit->generation++ < elitism_generations ) {
 
 	newPopulation->unshift(this->mostfit);
 
-	if ( params->KEEP_STABLE_POPULATION )
+	if ( keep_stable_population )
 	  newPopulation->pop();
 
       } else
@@ -105,7 +118,7 @@ void population::roulette_fill( void ) {
    * (survival of the fittest) + a chance at 1 more.
    */
   individual *person = this->first;
-  float average_fitness = params->MAX_FITNESS - get_avg_fitness();
+  float average_fitness = max_fitness - get_avg_fitness();
 
   if ( average_fitness == 0.0f ) {
 
@@ -113,27 +126,27 @@ void population::roulette_fill( void ) {
       person->progeny = 1;
       person = person->next;
     }
-    if ( params->VERBOSE == 3 )
+    if ( verbose == 3 )
       printf("No spread... everyone gets a baby\n");
     return;
   }
 
-  float population_control = 5*params->INITIAL_POPULATION/(this->last->count);
+  float population_control = 5*initial_population/(this->last->count);
 
   while ( person ) {
-    float fitness = params->MAX_FITNESS - person->fitness;
+    float fitness = max_fitness - person->fitness;
     unsigned int number_of_copies = (unsigned int)(fitness/average_fitness);
     float chance = (fitness/average_fitness) - (int)(fitness/average_fitness);
 
     person->progeny = number_of_copies;
-    if ( params->KEEP_STABLE_POPULATION ) {
+    if ( keep_stable_population ) {
       if ( randf() < chance )
 	person->progeny++;
     } else {
       if ( randf() < chance*population_control )
 	person->progeny++;
     }
-    if ( params->VERBOSE == 3 )
+    if ( verbose == 3 )
       printf("Individual %i has %i progeny\n", person->count, person->progeny);
 
     person = person->next;
@@ -153,7 +166,7 @@ void population::mate( void ) {
   /*-- Declare the internal variables we'll need to do our job --*/
   int newCount = 0;
 
-  if ( params->VERBOSE == 3 ) {
+  if ( verbose == 3 ) {
     printf("/================ mating population ===================/\n");
     this->dump();
     printf("/======================================================/\n");
@@ -198,7 +211,7 @@ void population::mate( void ) {
     } else if ( daddy->fitness == mommy->fitness ) {
       // Could be cloning...
       bool cloning = true;
-      for ( int i=0; i<params->NUMBER_OF_GENES; i++ )
+      for ( int i=0; i<number_of_genes; i++ )
 	cloning = cloning && (daddy->gene[i] == mommy->gene[i]);
 
       if ( cloning )
@@ -206,16 +219,16 @@ void population::mate( void ) {
 	     daddy->count, daddy->fitness, mommy->count, mommy->fitness);
     }
 
-    if ( params->VERBOSE == 3 ) {
+    if ( verbose == 3 ) {
       daddy->output(true);
       mommy->output(true);
     }
 
     if ( baby == NULL ) {
-      if ( params->KEEP_STABLE_POPULATION )
+      if ( keep_stable_population )
 	break;
 
-      if ( params->VERBOSE == 3 )
+      if ( verbose == 3 )
 	printf("Adding brand new baby\n");
 
       baby = newPopulation->push(daddy->make_baby( mommy ));
@@ -223,7 +236,7 @@ void population::mate( void ) {
     } else
       baby->copy( daddy->make_baby( mommy ) );
 
-    if ( params->VERBOSE == 3 )
+    if ( verbose == 3 )
       baby->output(true);
 
     newCount++;
@@ -233,12 +246,13 @@ void population::mate( void ) {
     if ( daddy->progeny <= 0 )
       daddy = daddy->next;
 
-    if ( newCount >= params->INITIAL_POPULATION && params->KEEP_STABLE_POPULATION )
+    if ( newCount >= initial_population && keep_stable_population )
       break;
   }
 
   // Get the fitness of each member of the population
-  if ( params->NUM_THREADS ) {
+  /***
+  if ( num_threads ) {
     lock();
     baby = newPopulation->first;
     while ( baby ) {
@@ -248,13 +262,22 @@ void population::mate( void ) {
     unlock();
     wait_for_threads();
   }
+  else {
+  ***/
+
+  baby = newPopulation->first;
+  while ( baby ) {
+    getFitness((void *)baby);
+    baby = baby->next;
+  }
+  //}
 
   if ( newCount < newPopulation->last->count ) {
     newPopulation->trim( newCount );
     newPopulation->recount();
   }
 
-  if ( params->VERBOSE == 3 ) {
+  if ( verbose == 3 ) {
     printf("/================ new population ======================/\n");
     newPopulation->dump();
     printf("/======================================================/\n");
@@ -262,7 +285,7 @@ void population::mate( void ) {
 
 
   // Keep the elitist bastards around for a while
-  if (params->ELITISM_GENERATIONS > 0)
+  if (elitism_generations > 0)
     this->copy_elites();
 
   // Either way we go, we'll need a sorted population
@@ -277,7 +300,7 @@ void population::mate( void ) {
   this->mating_in_progress = false;
   newPopulation->mating_in_progress = false;
 
-  if ( params->VERBOSE == 3 ) {
+  if ( verbose == 3 ) {
     individual *newP = newPopulation->first;
     individual *oldP = this->first;
     printf("\nGeneration %i complete\n", this->generation);
@@ -302,7 +325,7 @@ void population::copy( population *newPop ) {
   while ( newP ) {
 
     if ( oldP == NULL ) {
-      if ( params->KEEP_STABLE_POPULATION ) {
+      if ( keep_stable_population ) {
 	break;
       }
       oldP = this->push( newP );
@@ -314,7 +337,7 @@ void population::copy( population *newPop ) {
 
   }
 
-  if ( newPop->last->count < this->last->count && !params->KEEP_STABLE_POPULATION )
+  if ( newPop->last->count < this->last->count && !keep_stable_population )
     this->trim(newPop->last->count);
 
   this->count = 0;
@@ -376,18 +399,18 @@ void population::check_for_clones() {
 
 void population::print(void) {
 
-  if ( params->VERBOSE > 0 && params->VERBOSE <= 2 ) {
+  if ( verbose > 0 && verbose <= 2 ) {
     printf("Most fit %0.*f ", 
-	   params->ACCURACY, this->mostfit->fitness);
+	   accuracy, this->mostfit->fitness);
 
     printf("Generation %i ", this->generation);
 
-    if ( params->VERBOSE == 1 )
+    if ( verbose == 1 )
       printf("     \r");
-    else if ( params->VERBOSE == 2 ) {
+    else if ( verbose == 2 ) {
       printf(" Pop. %i (%i clones) Stats: Avg = %0.1f StDev = %0.1f Var = %0.1f persist = %i rate = %0.2f ",
 	     this->count, this->clones, this->average, this->stdev, this->variation, this->mostfit->generation,
-	     params->MUTATION_RATE);
+	     mutation_rate);
     }
 
     fflush(stdout);
@@ -404,9 +427,9 @@ void population::dump( int max ) {
 
   while ( temp && counter++ < max ) {
     printf("%03i (", temp->count);
-    for ( int i=0; i<params->NUMBER_OF_GENES; i++ )
-	    printf(" %+.*f,", params->ACCURACY, temp->gene[i]);
-	  printf("\b )\t=> fitness = %.*f\n", params->ACCURACY, temp->fitness);
+    for ( int i=0; i<number_of_genes; i++ )
+	    printf(" %+.*f,", accuracy, temp->gene[i]);
+	  printf("\b )\t=> fitness = %.*f\n", accuracy, temp->fitness);
     temp = temp->next;
   }
   return;
@@ -418,7 +441,7 @@ void population::flush( void ) {
   this->person = this->first;
   while ( this->person != NULL ) {
     *this->person->gene = {0.0f};
-    this->person->fitness = params->MAX_FITNESS;
+    this->person->fitness = max_fitness;
 
     this->person = this->person->next;
   }
@@ -508,7 +531,7 @@ individual *population::pop( void ) {
 
   person->previous = NULL;
   person->next = NULL;
-  person->fitness = params->MAX_FITNESS;
+  person->fitness = max_fitness;
 
   delete person;
 
@@ -611,7 +634,7 @@ void population::get_fittest( void ) {
   this->mostfit = this->first;
   return;
 
-  float most_fit = params->MAX_FITNESS;
+  float most_fit = max_fitness;
   this->mostfit = this->first;
 
   person = this->first;
@@ -622,10 +645,10 @@ void population::get_fittest( void ) {
     }
     person = person->next;
   }
-  if ( most_fit > params->MAX_FITNESS )
-    most_fit = params->MAX_FITNESS;
+  if ( most_fit > max_fitness )
+    most_fit = max_fitness;
 
-  if ( params->VERBOSE == 3 && this->mostfit != this->first )
+  if ( verbose == 3 && this->mostfit != this->first )
     cout << "\n######################## MOST FIT NOT FIRST! ########################\n";
 
   return;
@@ -646,37 +669,37 @@ void population::recount( void ) {
 /*-- Modify the rate of mutation based on population distribution --*/
 void population::mutation_gain( void ) {
 
-  if ( params->MUTATION_RATE >= 0.5 ) {
-    params->MUTATION_RATE = 0.5f;
+  if ( mutation_rate >= 0.5 ) {
+    mutation_rate = 0.5f;
     return;
   }
 
   if ( this->mostfit->generation > 500 ) {
-    if ( params->VERBOSE > 1 )
-      cout << "\nincreasing rate for persistance of " << this->mostfit->generation << "\n";
-    params->MUTATION_RATE += params->MUTATION_GAIN;
+    if ( verbose > 1 )
+      cout << "\nincreasing mutation for persistance of " << this->mostfit->generation << "\n";
+    mutation_rate += mutation_increase;
   }
 
   if ( this->variation < 0.5f ) {
-    if ( params->VERBOSE > 1 )
-      cout << "\nincreasing rate for variation of " << this->variation << "\n";
-    params->MUTATION_RATE += params->MUTATION_GAIN;
+    if ( verbose > 1 )
+      cout << "\nincreasing mutation for variation of " << this->variation << "\n";
+    mutation_rate += mutation_increase;
   }
 
   if  ( this->clones > 0.025*this->last->count ) {
-    if ( params->VERBOSE > 1 )
-      cout << "\nincreasing rate for cloning rate of " << (float)this->clones/(float)this->last->count << "\n";
-    params->MUTATION_RATE += params->MUTATION_GAIN;
+    if ( verbose > 1 )
+      cout << "\nincreasing mutation for cloning rate of " << (float)this->clones/(float)this->last->count << "\n";
+    mutation_rate += mutation_increase;
   }
 
   if ( this->variation > 5.0f ) {
-    if ( params->VERBOSE > 1 )
-      cout << "\ndecreasing rate for variation of " << this->variation << "\n";
-    params->MUTATION_RATE -= params->MUTATION_GAIN;
+    if ( verbose > 1 )
+      cout << "\ndecreasing mutation for variation of " << this->variation << "\n";
+    mutation_rate -= mutation_increase;
   }
 
-  if ( params->MUTATION_RATE > 0.5 )
-    params->MUTATION_RATE = 0.5f;
+  if ( mutation_rate > 0.5 )
+    mutation_rate = 0.5f;
 
   return;
 }
@@ -697,13 +720,13 @@ void population::sort() {
     p = p->next;
   }
 
-  if ( params->SORT_TYPE == "QUICK" )
+  if ( sort_type == "QUICK" )
     this->quick_sort((void **)popArray);
-  else if ( params->SORT_TYPE == "HEAP" )
+  else if ( sort_type == "HEAP" )
     this->heap_sort((void **)popArray);
   else {
     fprintf(stderr, "\nUnknown sort routine\nDefaulting to heap sort\n");
-    params->SORT_TYPE = "HEAP";
+    sort_type = "HEAP";
     this->heap_sort((void **)popArray);
   }
 

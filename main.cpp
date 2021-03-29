@@ -1,7 +1,7 @@
 #include "global.h"
 #include "population.h"
 #include "individual.h"
-#include "gnuplot.h"
+//#include "gnuplot.h"
 #include <fitness.h>
 
 #include <signal.h>
@@ -18,7 +18,7 @@
 
 /*-- Prototypes --*/
 static int naptime( int );
-void randomize();
+//void randomize();
 
 /*-- Global statements --*/
 char state[512];
@@ -37,8 +37,9 @@ int main( int argc, char** argv ) {
   struct timeval tv1, tv2;
   unsigned int elapsed_time = 0;
 
-  GnuPlot *gplot = new GnuPlot();
-  double * fitness_array;
+  //GnuPlot *gplot = new GnuPlot();
+  //double * fitness_array
+  //char range[128];
 
   const unsigned int nbins = 100;
   double * ordinate = new double[nbins];
@@ -46,8 +47,19 @@ int main( int argc, char** argv ) {
   /*-- Instantiate the requisite classes --*/
   params = new parameters( (char *)"ga.rcp" );
 
+  int verbose = params->getInt("VERBOSE");
+  int accuracy = params->getInt("ACCURACY");
+  int cpu_usage_limit = params->getInt("CPU_USAGE_LIMIT");
+  int maximum_generations = params->getInt("MAXIMUM_GENERATIONS");
+  float exit_limit = params->getFloat("EXIT_LIMIT");
+  int dumpn_top = params->getInt("DUMP_N_TOP");
+  bool show_plot = params->getBool("SHOW_PLOT");
+  //int plot_freq = params->getInt("PLOT_FREQ");
+
+  unsigned long int seed = params->getULong("SEED");
+
   // Initialize the random number generator
-  randomize();
+  randomize(seed);
 
   // Initialize the function mapping for the fitness library
   initialize_fitness_library();
@@ -58,10 +70,8 @@ int main( int argc, char** argv ) {
   /*-- Since this is a CPU intensive process, renice it to low priority --*/
   setpriority( PRIO_PROCESS, 0, renice_priority );
 
-  if ( params->VERBOSE == 2 )
+  if ( verbose == 2 )
     gettimeofday(&tv1, NULL);
-
-  char range[128];
 
   while (!STOPNOW) {
 
@@ -75,22 +85,23 @@ int main( int argc, char** argv ) {
     // Dump out the population status
     society->print();
 
-    if ( params->VERBOSE == 2 ) {
+    if ( verbose == 2 ) {
       if ( elapsed_time > 0 )
 	printf("Gen/s = %.0f     \r", (double)(society->generation/elapsed_time));
       else
 	printf("Gen/s = x.xx     \r");
     }
 
+    /***
     // pop a plot into a gnuplot window
-    if ( params->SHOW_PLOT && !(society->generation % params->PLOT_FREQ) ) {
+    if ( show_plot && !(society->generation % plot_freq) ) {
       gplot->gnuplot_resetplot();
 
       float avg = society->average;
       float stdev = society->stdev;
 
       sprintf(range, "set xrange [%f:%f];set yrange[0:50]", 
-	      params->EXIT_LIMIT, avg+stdev);
+	      exit_limit, avg+stdev);
       gplot->gnuplot_cmd(range);
 
       float plot_max = avg + 2*stdev;
@@ -102,18 +113,19 @@ int main( int argc, char** argv ) {
       fitness_array = society->get_population_fitness();
       gplot->gnuplot_plot_histogram( ordinate, fitness_array, nbins, 0, (char *)"Population Fitness");
     }
+    ***/
 
     // Take a little siesta to reduce CPU consumption
-    if ( params->CPU_USAGE_LIMIT < 100 )
+    if ( cpu_usage_limit < 100 )
       naptime(society->generation);
 
     STOPNOW = 
       STOPNOW || 
-      society->mostfit->fitness <= params->EXIT_LIMIT || 
-      (params->MAXIMUM_GENERATIONS > 0 && 
-       (int)society->generation >= params->MAXIMUM_GENERATIONS);
+      society->mostfit->fitness <= exit_limit || 
+      (maximum_generations > 0 && 
+       (int)society->generation >= maximum_generations);
 
-    if ( params->VERBOSE == 2 ) {
+    if ( verbose == 2 ) {
       gettimeofday(&tv2, NULL);
       elapsed_time = (tv2.tv_sec - tv1.tv_sec);
     }
@@ -121,15 +133,15 @@ int main( int argc, char** argv ) {
 
   // Dump out the results
   printf("\n\nGeneration %i Most fit = %0.*f\n",
-	 society->generation, params->ACCURACY, society->mostfit->fitness);
+	 society->generation, accuracy, society->mostfit->fitness);
 
   outputIndividual(society->mostfit);
 
   // And the top N individuals
-  if ( params->DUMP_N_TOP > 0 )
-    society->dump(params->DUMP_N_TOP);
+  if ( dumpn_top > 0 )
+    society->dump(dumpn_top);
 
-  if ( params->SHOW_PLOT ) {
+  if ( show_plot ) {
     char temp;
     printf("Hit <RET> to finish: ");
     temp = getc(stdin);
@@ -138,7 +150,7 @@ int main( int argc, char** argv ) {
 
   delete society;
   delete params;
-  delete gplot;
+  //delete gplot;
   delete [] ordinate;
 
   return 0;
@@ -157,8 +169,8 @@ static int naptime( int counter ) {
   static int nap_time = 10, sleep_time = 500;
   static int proc_percent = 0;
 
-  static int cpu_limit = params->CPU_USAGE_LIMIT;
-  static int verbose = params->VERBOSE;
+  static int cpu_limit = params->getInt("CPU_USAGE_LIMIT");
+  static int verbose = params->getInt("VERBOSE");
 
   /*-- First, figure out who we are this time --*/
   if ( !PID ) {
@@ -244,8 +256,9 @@ static int naptime( int counter ) {
   return proc_percent;
 } // End static void naptime()
 
+/***
 void randomize( void ) {
-  unsigned long int seed = params->SEED;
+  unsigned long int seed = params->getLong("SEED");
   int filedes = 0;
   extern char state[512];
 
@@ -271,3 +284,4 @@ void randomize( void ) {
 
   return;
 }
+***/
